@@ -187,6 +187,9 @@ nrow(as.data.frame(NFTag21200))
 head(as.data.frame(NFTag21200))
 tail(as.data.frame(NFTag21200))
 
+
+max(as.data.frame(NFTag55719)$timestamp) - min(as.data.frame(NFTag55719)$timestamp)
+
 All_tags <- 
   bind(NFTag55719, NFTag21200)
 
