@@ -19,7 +19,7 @@ library(plotKML)
 import_plover_tag_spatial <- 
   function(data_loc, tag_ID, projection,
            time_zone = "America/Mazatlan",
-           tag_model, bird_ID, bird_sex, bird_code){
+           tag_model, bird_ID, bird_sex, bird_code, n_slice = 0){
     
     if(tag_model == "nanoFix-mini")
     {
@@ -88,6 +88,9 @@ import_plover_tag_spatial <-
         read.table(sep = "", na.strings = "", file = data_loc, fill = TRUE,
                    stringsAsFactors = FALSE, header = TRUE) %>% 
         
+        # remove first observation (calibration fix)
+        slice(-n_slice) %>% 
+        
         mutate(
           # extract the temporal information from the string
           year = paste0("20", str_sub(string = RTC.date, start = 1, end = 2)),
@@ -121,17 +124,12 @@ import_plover_tag_spatial <-
         ) %>% 
         
         # remove observations without a reliable location
-        filter(latitude != 0) %>%
-        
         dplyr::select(tag_ID, timestamp_simple, fix_number, timestamp, 
-                      Sats, Latitude, Longitude, Altitude.m.,
-                      Voltage.V.) %>% 
+                      Sats, Latitude, Longitude) %>% 
         
         `colnames<-` (tolower(names(.))) %>% 
         
-        rename(elevation = altitude.m.,
-               battery = voltage.v.,
-               satellites = sats,
+        rename(satellites = sats,
                tag_ID = tag_id) %>% 
         
         mutate(# assign bird ring
@@ -161,37 +159,34 @@ import_plover_tag_spatial <-
     }
   }
 
-NFTag55584 <- 
-  import_plover_tag_spatial(data_loc = "data/raw/Tag55584/Obs040621_133158_Tag55584.pos",
-                            tag_ID = "NF55584", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
-                            time_zone = "Europe/Lisbon", tag_model = "nanoFix-mini",
-                            bird_ID = "D35644", bird_code = "NA", bird_sex = "M")
+PinPoint_51076_Male_CA3340_C2_2022 <- 
+  import_plover_tag_spatial(data_loc = "data/Ceuta/MaleCA3340_C2_2022/Swift GPS Data Files/PinPoint 51076 2022-04-22 21-34-26_NestC2_MaleCA3440.txt",
+                            tag_ID = "PinPoint_51076", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
+                            time_zone = "GMT", tag_model = "PinPoint-10", n_slice = 1,
+                            bird_ID = "CA3340", bird_code = "GX.RM|WX.GX", bird_sex = "M")
 
-NFTag55719 <- 
-  import_plover_tag_spatial(data_loc = "data/raw/Tag55719/Obs050721_232954_Tag55719.pos",
-                            tag_ID = "NF55719", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
-                            time_zone = "Europe/Lisbon", tag_model = "nanoFix-mini",
-                            bird_ID = "P01903", bird_code = "NA", bird_sex = "M")
+PinPoint_51064_Female_CA3224_C1_2022 <- 
+  import_plover_tag_spatial(data_loc = "data/Ceuta/FemaleCA3224_C1_2022/Swift GPS Data Files/PinPoint 51064 2022-04-22 21-18-02_NestC1_FemaleCA3224.txt",
+                            tag_ID = "PinPoint_51076", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
+                            time_zone = "GMT", tag_model = "PinPoint-10", n_slice = c(1,2),
+                            bird_ID = "CA3224", bird_code = "MX.RB|LX.OX", bird_sex = "F")
 
-NFTag21200 <- 
-  import_plover_tag_spatial(data_loc = "data/raw/Tag21200/Obs060721_152942_Tag21200.pos",
-                            tag_ID = "NF21200", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
-                            time_zone = "Europe/Lisbon", tag_model = "nanoFix-mini",
-                            bird_ID = "D59933", bird_code = "NA", bird_sex = "F")
+nrow(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022))
+head(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022))
+tail(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022))
 
-nrow(as.data.frame(NFTag55719))
-head(as.data.frame(NFTag55719))
-tail(as.data.frame(NFTag55719))
+nrow(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022))
+head(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022))
+tail(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022))
 
-nrow(as.data.frame(NFTag21200))
-head(as.data.frame(NFTag21200))
-tail(as.data.frame(NFTag21200))
-
-
-max(as.data.frame(NFTag55719)$timestamp) - min(as.data.frame(NFTag55719)$timestamp)
+max(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022)$timestamp) - 
+  min(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022)$timestamp)
+max(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022)$timestamp) - 
+  min(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022)$timestamp)
 
 All_tags <- 
-  bind(NFTag55719, NFTag21200)
+  bind(PinPoint_51076_Male_CA3340_C2_2022, 
+       PinPoint_51064_Female_CA3224_C1_2022)
 
 UTM13n <- CRS("+proj=utm +zone=13 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 WGS84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
@@ -208,29 +203,43 @@ mapview(All_tags, zcol = "sex",
         col.regions = brewer.pal(8, "Dark2")[c(2, 1)])#colorRampPalette(brewer.pal(8, "Dark2")))
 
 # make move object for animation
+Male_CA3340_move <- df2move(df = arrange(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022), timestamp_simple), track_id = "ring", 
+                            proj = "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
+                            x = "longitude", y = "latitude", time = "timestamp")
+
+Female_CA3224_move <- df2move(df = arrange(as.data.frame(PinPoint_51076_Female_CA3224_C1_2022), timestamp_simple), track_id = "ring", 
+                              proj = "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
+                              x = "longitude", y = "latitude", time = "timestamp")
+
 All_tags_move <- df2move(df = arrange(as.data.frame(All_tags), timestamp_simple), track_id = "ring", 
-                         proj = "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
-                         x = "longitude", y = "latitude", time = "timestamp")
+                              proj = "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
+                              x = "longitude", y = "latitude", time = "timestamp")
 
 # check the amount of time between fixes. The tracks in move_data have 
 # irregular timestamps and sampling rates. print unique timestamps and timeLag 
 # (might vary due to different tagging schedules and models)
+unique(timestamps(Male_CA3340_move))
+timeLag(Male_CA3340_move, unit = "hours")
+
 unique(timestamps(All_tags_move))
 timeLag(All_tags_move, unit = "hours")
 
 # use align_move to correct move_data to a uniform time scale and lag using interpolation.
 # resolution of 12 hours per timestamp:
-All_tags_move_align <- align_move(All_tags_move, res = 0.5, unit = "hours")
+Male_CA3340_move_align <- align_move(Male_CA3340_move, res = 5, unit = "mins")
+Female_CA3224_move_align <- align_move(Female_CA3224_move, res = 5, unit = "mins")
+All_tags_move_align <- align_move(All_tags_move, res = 5, unit = "mins")
 
-unique(unlist(timeLag(All_tags_move_align, units = "hours")))
+unique(unlist(timeLag(All_tags_move_align, units = "mins")))
 
-ext <- extent(-9.03, -8.89, 38.725, 38.77)
+# ext <- extent(-9.03, -8.89, 38.725, 38.77)
+
+ext <- extent(-106.983, -106.941, 23.895, 23.926)
 
 ext[1] - ((ext[1] - ext[2]) * 0.2)
 ext[3] - ((ext[3] - ext[4]) * 0.9)
 
 # cities in Sinaloa
-
 All_tags_frames <- 
   frames_spatial(All_tags_move_align, 
                  path_alpha = 0.8, path_size = 3,
@@ -247,19 +256,76 @@ All_tags_frames <-
   # map_service = "osm", map_type = "hydda", alpha = 0.5) %>% 
   add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
   add_northarrow(colour = "white",label_size = 4, height = 0.14, size = 0.8,
-                 x = ext[1] - ((ext[1] - ext[2]) * 0.32), 
-                 y = ext[3] - ((ext[3] - ext[4]) * 0.825)) %>%
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.05), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.2)) %>%
   add_scalebar(colour = "white", distance = 2, 
-               x = ext[1] - ((ext[1] - ext[2]) * 0.065), 
-               y = ext[3] - ((ext[3] - ext[4]) * 0.8), 
+               x = ext[1] - ((ext[1] - ext[2]) * 0.1), 
+               y = ext[3] - ((ext[3] - ext[4]) * 0.1), 
                height = 0.03) %>%
   add_timestamps(type = "label", 
-                 x = ext[1] - ((ext[1] - ext[2]) * 0.15), 
-                 y = ext[3] - ((ext[3] - ext[4]) * 0.93), 
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.75), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.9), 
                  size = 4) %>%
   add_progress()
 
-All_tags_frames[[80]]
+
+Male_CA3340_move_frames <- 
+  frames_spatial(Male_CA3340_move_align, 
+                 path_alpha = 0.8, path_size = 3,
+                 trace_show = TRUE, tail_size = 0.75, 
+                 path_legend = TRUE, path_fade = TRUE,
+                 path_colours = brewer.pal(7, "Dark2")[c(1)],
+                 map_service = "mapbox", map_type = "satellite",
+                 map_token = "pk.eyJ1IjoibHVrZWViZXJoYXJ0IiwiYSI6ImNqeHA5bnUzaTBmZjUzbXF1ZHhwbjlzNXgifQ.zvOb_q-tUGOEtRKoyyki-Q",
+                 # map_dir = "data/mapbox/",
+                 alpha = 0.9,
+                 margin_factor = 2,
+                 equidistant = FALSE, 
+                 ext = ext) %>%
+  # map_service = "osm", map_type = "hydda", alpha = 0.5) %>% 
+  add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
+  add_northarrow(colour = "white",label_size = 4, height = 0.14, size = 0.8,
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.05), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.2)) %>%
+  add_scalebar(colour = "white", distance = 2, 
+               x = ext[1] - ((ext[1] - ext[2]) * 0.1), 
+               y = ext[3] - ((ext[3] - ext[4]) * 0.1), 
+               height = 0.03) %>%
+  add_timestamps(type = "label", 
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.75), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.9), 
+                 size = 4) %>%
+  add_progress()
+
+Female_CA3224_move_frames <- 
+  frames_spatial(Female_CA3224_move_align, 
+                 path_alpha = 0.8, path_size = 3,
+                 trace_show = TRUE, tail_size = 0.75, 
+                 path_legend = TRUE, path_fade = TRUE,
+                 path_colours = brewer.pal(7, "Dark2")[c(1)],
+                 map_service = "mapbox", map_type = "satellite",
+                 map_token = "pk.eyJ1IjoibHVrZWViZXJoYXJ0IiwiYSI6ImNqeHA5bnUzaTBmZjUzbXF1ZHhwbjlzNXgifQ.zvOb_q-tUGOEtRKoyyki-Q",
+                 # map_dir = "data/mapbox/",
+                 alpha = 0.9,
+                 margin_factor = 2,
+                 equidistant = FALSE, 
+                 ext = ext) %>%
+  # map_service = "osm", map_type = "hydda", alpha = 0.5) %>% 
+  add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
+  add_northarrow(colour = "white",label_size = 4, height = 0.14, size = 0.8,
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.05), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.2)) %>%
+  add_scalebar(colour = "white", distance = 2, 
+               x = ext[1] - ((ext[1] - ext[2]) * 0.1), 
+               y = ext[3] - ((ext[3] - ext[4]) * 0.1), 
+               height = 0.03) %>%
+  add_timestamps(type = "label", 
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.75), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.9), 
+                 size = 4) %>%
+  add_progress()
+
+Male_CA3340_move_frames[[80]]
 
 recovery_location <- 
   as.data.frame(NFTag55584)[c(23),]
@@ -304,8 +370,10 @@ cl = detectCores() %>% makePSOCKcluster; registerDoParallel(cl)
 # animate frames
 # animate_frames(frames[1:25], width = 350, height = 350, res = 50,
 #                overwrite = TRUE, out_file = "R/animations/PinPoint_moveVis_Oct_21_test.gif")
+animate_frames(Male_CA3340_move_frames, width = 800, height = 800, 
+               overwrite = TRUE, out_file = "products/animations/Male_CA3340_2022_short_animation.mp4")
 animate_frames(All_tags_frames, width = 800, height = 800, 
-               overwrite = TRUE, out_file = "products/animations/55719_21200_animation.mp4")
+               overwrite = TRUE, out_file = "products/animations/F_CA3224_and_M_CA3340_2022_short.mp4")
 # closes the R Sessions in the other cores (not the one that you are working on)
 stopCluster(cl)
 registerDoSEQ()
