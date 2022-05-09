@@ -89,7 +89,7 @@ import_plover_tag_spatial <-
                    stringsAsFactors = FALSE, header = TRUE) %>% 
         
         # remove first observation (calibration fix)
-        slice(-n_slice) %>% 
+        slice(n_slice * -1) %>% 
         
         mutate(
           # extract the temporal information from the string
@@ -167,26 +167,34 @@ PinPoint_51076_Male_CA3340_C2_2022 <-
 
 PinPoint_51064_Female_CA3224_C1_2022 <- 
   import_plover_tag_spatial(data_loc = "data/Ceuta/FemaleCA3224_C1_2022/Swift GPS Data Files/PinPoint 51064 2022-04-22 21-18-02_NestC1_FemaleCA3224.txt",
-                            tag_ID = "PinPoint_51076", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
+                            tag_ID = "PinPoint_51064", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
                             time_zone = "GMT", tag_model = "PinPoint-10", n_slice = c(1,2),
                             bird_ID = "CA3224", bird_code = "MX.RB|LX.OX", bird_sex = "F")
 
-nrow(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022))
-head(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022))
-tail(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022))
+PinPoint_51065_Female_CV0195_WD1_2022 <- 
+  import_plover_tag_spatial(data_loc = "data/Ceuta/FemaleCV0195_WD1_2022/Swift GPS Data Files/PinPoint 51065 2022-05-04 02-02-18_NestWD1FemaleCV0195.txt",
+                            tag_ID = "PinPoint_51065", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
+                            time_zone = "GMT", tag_model = "PinPoint-10", n_slice = 1,
+                            bird_ID = "CV0195", bird_code = "UNK", bird_sex = "F")
 
-nrow(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022))
-head(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022))
-tail(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022))
+PinPoint_51069_Male_CN0066_C301_2022 <- 
+  import_plover_tag_spatial(data_loc = "data/Ceuta/MaleCN0066_C301_2022/Swift GPS Data Files/PinPoint 51069 2022-05-04 01-45-14_NestC301_MaleCN0066.txt",
+                            tag_ID = "PinPoint_51069", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
+                            time_zone = "GMT", tag_model = "PinPoint-10", n_slice = 1,
+                            bird_ID = "CN0066", bird_code = "GX.RM|YX.OX", bird_sex = "M")
 
-max(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022)$timestamp) - 
-  min(as.data.frame(PinPoint_51076_Male_CA3340_C2_2022)$timestamp)
-max(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022)$timestamp) - 
-  min(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022)$timestamp)
+PinPoint_51073_Female_CN0937_C301_2022 <- 
+  import_plover_tag_spatial(data_loc = "data/Ceuta/FemaleCN0937_C301_2022/Swift GPS Data Files/PinPoint 51073 2022-05-06 22-39-50_NestC301_FemaleCN0937.txt",
+                            tag_ID = "PinPoint_51073", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
+                            time_zone = "GMT", tag_model = "PinPoint-10", n_slice = 1,
+                            bird_ID = "CN0937", bird_code = "GX.RM|YX.OX", bird_sex = "F")
 
-All_tags <- 
-  bind(PinPoint_51076_Male_CA3340_C2_2022, 
-       PinPoint_51064_Female_CA3224_C1_2022)
+nrow(as.data.frame(PinPoint_51073_Female_CN0937_C301_2022))
+head(as.data.frame(PinPoint_51073_Female_CN0937_C301_2022))
+tail(as.data.frame(PinPoint_51073_Female_CN0937_C301_2022))
+
+max(as.data.frame(PinPoint_51073_Female_CN0937_C301_2022)$timestamp) - 
+  min(as.data.frame(PinPoint_51073_Female_CN0937_C301_2022)$timestamp)
 
 UTM13n <- CRS("+proj=utm +zone=13 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 WGS84 <- CRS("+proj=longlat +ellps=WGS84 +datum=WGS84")
@@ -207,74 +215,58 @@ Male_CA3340_move <- df2move(df = arrange(as.data.frame(PinPoint_51076_Male_CA334
                             proj = "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
                             x = "longitude", y = "latitude", time = "timestamp")
 
-Female_CA3224_move <- df2move(df = arrange(as.data.frame(PinPoint_51076_Female_CA3224_C1_2022), timestamp_simple), track_id = "ring", 
+Male_CN0066_move <- df2move(df = arrange(as.data.frame(PinPoint_51069_Male_CN0066_C301_2022), timestamp_simple), track_id = "ring", 
                               proj = "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
                               x = "longitude", y = "latitude", time = "timestamp")
 
-All_tags_move <- df2move(df = arrange(as.data.frame(All_tags), timestamp_simple), track_id = "ring", 
+Female_CA3224_move <- df2move(df = arrange(as.data.frame(PinPoint_51064_Female_CA3224_C1_2022), timestamp_simple), track_id = "ring", 
+                              proj = "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
+                              x = "longitude", y = "latitude", time = "timestamp")
+
+Female_CV0195_move <- df2move(df = arrange(as.data.frame(PinPoint_51065_Female_CV0195_WD1_2022), timestamp_simple), track_id = "ring", 
+                              proj = "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
+                              x = "longitude", y = "latitude", time = "timestamp")
+
+Female_CN0937_move <- df2move(df = arrange(as.data.frame(PinPoint_51073_Female_CN0937_C301_2022)[1:73,], timestamp_simple), track_id = "ring", 
                               proj = "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
                               x = "longitude", y = "latitude", time = "timestamp")
 
 # check the amount of time between fixes. The tracks in move_data have 
 # irregular timestamps and sampling rates. print unique timestamps and timeLag 
 # (might vary due to different tagging schedules and models)
-unique(timestamps(Male_CA3340_move))
-timeLag(Male_CA3340_move, unit = "hours")
-
-unique(timestamps(All_tags_move))
-timeLag(All_tags_move, unit = "hours")
+unique(timestamps(Female_CN0937_move))
+timeLag(Female_CN0937_move, unit = "hours")
 
 # use align_move to correct move_data to a uniform time scale and lag using interpolation.
 # resolution of 12 hours per timestamp:
 Male_CA3340_move_align <- align_move(Male_CA3340_move, res = 5, unit = "mins")
+Male_CN0066_move_align <- align_move(Male_CN0066_move, res = 5, unit = "mins")
 Female_CA3224_move_align <- align_move(Female_CA3224_move, res = 5, unit = "mins")
-All_tags_move_align <- align_move(All_tags_move, res = 5, unit = "mins")
+Female_CV0195_move_align <- align_move(Female_CV0195_move, res = 5, unit = "mins")
+Female_CN0937_move_align <- align_move(Female_CN0937_move, res = 5, unit = "mins")
 
-unique(unlist(timeLag(All_tags_move_align, units = "mins")))
+unique(unlist(timeLag(Male_CA3340_move_align, units = "mins")))
+unique(unlist(timeLag(Male_CN0066_move_align, units = "mins")))
+unique(unlist(timeLag(Female_CA3224_move_align, units = "mins")))
+unique(unlist(timeLag(Female_CV0195_move_align, units = "mins")))
+unique(unlist(timeLag(Female_CN0937_move_align, units = "mins")))
 
 # ext <- extent(-9.03, -8.89, 38.725, 38.77)
 
-ext <- extent(-106.983, -106.941, 23.895, 23.926)
+# ext <- extent(-106.983, -106.941, 23.895, 23.926)
+ext <- extent(-106.990, -106.945, 23.895, 23.940)
+ext <- extent(-106.990, -106.880, 23.83, 23.940)
+
 
 ext[1] - ((ext[1] - ext[2]) * 0.2)
 ext[3] - ((ext[3] - ext[4]) * 0.9)
-
-# cities in Sinaloa
-All_tags_frames <- 
-  frames_spatial(All_tags_move_align, 
-                 path_alpha = 0.8, path_size = 3,
-                 trace_show = TRUE, tail_size = 0.75, 
-                 path_legend = TRUE, path_fade = TRUE,
-                 path_colours = brewer.pal(7, "Dark2")[c(1, 2)],
-                 map_service = "mapbox", map_type = "satellite",
-                 map_token = "pk.eyJ1IjoibHVrZWViZXJoYXJ0IiwiYSI6ImNqeHA5bnUzaTBmZjUzbXF1ZHhwbjlzNXgifQ.zvOb_q-tUGOEtRKoyyki-Q",
-                 # map_dir = "data/mapbox/",
-                 alpha = 0.9,
-                 margin_factor = 2,
-                 equidistant = FALSE, 
-                 ext = ext) %>%
-  # map_service = "osm", map_type = "hydda", alpha = 0.5) %>% 
-  add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
-  add_northarrow(colour = "white",label_size = 4, height = 0.14, size = 0.8,
-                 x = ext[1] - ((ext[1] - ext[2]) * 0.05), 
-                 y = ext[3] - ((ext[3] - ext[4]) * 0.2)) %>%
-  add_scalebar(colour = "white", distance = 2, 
-               x = ext[1] - ((ext[1] - ext[2]) * 0.1), 
-               y = ext[3] - ((ext[3] - ext[4]) * 0.1), 
-               height = 0.03) %>%
-  add_timestamps(type = "label", 
-                 x = ext[1] - ((ext[1] - ext[2]) * 0.75), 
-                 y = ext[3] - ((ext[3] - ext[4]) * 0.9), 
-                 size = 4) %>%
-  add_progress()
-
 
 Male_CA3340_move_frames <- 
   frames_spatial(Male_CA3340_move_align, 
                  path_alpha = 0.8, path_size = 3,
                  trace_show = TRUE, tail_size = 0.75, 
-                 path_legend = TRUE, path_fade = TRUE,
-                 path_colours = brewer.pal(7, "Dark2")[c(1)],
+                 path_legend = FALSE, path_fade = TRUE,
+                 path_colours = brewer.pal(7, "Dark2")[c(2)],
                  map_service = "mapbox", map_type = "satellite",
                  map_token = "pk.eyJ1IjoibHVrZWViZXJoYXJ0IiwiYSI6ImNqeHA5bnUzaTBmZjUzbXF1ZHhwbjlzNXgifQ.zvOb_q-tUGOEtRKoyyki-Q",
                  # map_dir = "data/mapbox/",
@@ -283,10 +275,12 @@ Male_CA3340_move_frames <-
                  equidistant = FALSE, 
                  ext = ext) %>%
   # map_service = "osm", map_type = "hydda", alpha = 0.5) %>% 
-  add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
-  add_northarrow(colour = "white",label_size = 4, height = 0.14, size = 0.8,
+  add_labels(title = "Snowy Plover, Bahía de Ceuta, Mexico", 
+             subtitle = "Male CA3340, nest C2",
+             x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
+  add_northarrow(colour = "white",label_size = 4, height = 0.1, size = 0.8,
                  x = ext[1] - ((ext[1] - ext[2]) * 0.05), 
-                 y = ext[3] - ((ext[3] - ext[4]) * 0.2)) %>%
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.25)) %>%
   add_scalebar(colour = "white", distance = 2, 
                x = ext[1] - ((ext[1] - ext[2]) * 0.1), 
                y = ext[3] - ((ext[3] - ext[4]) * 0.1), 
@@ -301,8 +295,8 @@ Female_CA3224_move_frames <-
   frames_spatial(Female_CA3224_move_align, 
                  path_alpha = 0.8, path_size = 3,
                  trace_show = TRUE, tail_size = 0.75, 
-                 path_legend = TRUE, path_fade = TRUE,
-                 path_colours = brewer.pal(7, "Dark2")[c(1)],
+                 path_legend = FALSE, path_fade = TRUE,
+                 path_colours = brewer.pal(7, "Dark2")[c(2)],
                  map_service = "mapbox", map_type = "satellite",
                  map_token = "pk.eyJ1IjoibHVrZWViZXJoYXJ0IiwiYSI6ImNqeHA5bnUzaTBmZjUzbXF1ZHhwbjlzNXgifQ.zvOb_q-tUGOEtRKoyyki-Q",
                  # map_dir = "data/mapbox/",
@@ -311,10 +305,12 @@ Female_CA3224_move_frames <-
                  equidistant = FALSE, 
                  ext = ext) %>%
   # map_service = "osm", map_type = "hydda", alpha = 0.5) %>% 
-  add_labels(x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
-  add_northarrow(colour = "white",label_size = 4, height = 0.14, size = 0.8,
+  add_labels(title = "Snowy Plover, Bahía de Ceuta, Mexico", 
+             subtitle = "Female CA3224, nest C1",
+             x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
+  add_northarrow(colour = "white",label_size = 4, height = 0.1, size = 0.8,
                  x = ext[1] - ((ext[1] - ext[2]) * 0.05), 
-                 y = ext[3] - ((ext[3] - ext[4]) * 0.2)) %>%
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.25)) %>%
   add_scalebar(colour = "white", distance = 2, 
                x = ext[1] - ((ext[1] - ext[2]) * 0.1), 
                y = ext[3] - ((ext[3] - ext[4]) * 0.1), 
@@ -325,55 +321,153 @@ Female_CA3224_move_frames <-
                  size = 4) %>%
   add_progress()
 
-Male_CA3340_move_frames[[80]]
+Male_CN0066_move_frames <- 
+  frames_spatial(Male_CN0066_move_align, 
+                 path_alpha = 0.8, path_size = 3,
+                 trace_show = TRUE, tail_size = 0.75, 
+                 path_legend = FALSE, path_fade = TRUE,
+                 path_colours = brewer.pal(7, "Dark2")[c(2)],
+                 map_service = "mapbox", map_type = "satellite",
+                 map_token = "pk.eyJ1IjoibHVrZWViZXJoYXJ0IiwiYSI6ImNqeHA5bnUzaTBmZjUzbXF1ZHhwbjlzNXgifQ.zvOb_q-tUGOEtRKoyyki-Q",
+                 # map_dir = "data/mapbox/",
+                 alpha = 0.9,
+                 margin_factor = 2,
+                 equidistant = FALSE, 
+                 ext = ext) %>%
+  # map_service = "osm", map_type = "hydda", alpha = 0.5) %>% 
+  add_labels(title = "Snowy Plover, Bahía de Ceuta, Mexico", 
+             subtitle = "Male CN0066, nest C301",
+             x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
+  add_northarrow(colour = "white",label_size = 4, height = 0.1, size = 0.8,
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.05), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.25)) %>%
+  add_scalebar(colour = "white", distance = 2, 
+               x = ext[1] - ((ext[1] - ext[2]) * 0.1), 
+               y = ext[3] - ((ext[3] - ext[4]) * 0.1), 
+               height = 0.03) %>%
+  add_timestamps(type = "label", 
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.75), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.9), 
+                 size = 4) %>%
+  add_progress()
 
-recovery_location <- 
-  as.data.frame(NFTag55584)[c(23),]
+Female_CV0195_move_frames <- 
+  frames_spatial(Female_CV0195_move_align, 
+                 path_alpha = 0.8, path_size = 3,
+                 trace_show = TRUE, tail_size = 0.75, 
+                 path_legend = FALSE, path_fade = TRUE,
+                 path_colours = brewer.pal(7, "Dark2")[c(2)],
+                 map_service = "mapbox", map_type = "satellite",
+                 map_token = "pk.eyJ1IjoibHVrZWViZXJoYXJ0IiwiYSI6ImNqeHA5bnUzaTBmZjUzbXF1ZHhwbjlzNXgifQ.zvOb_q-tUGOEtRKoyyki-Q",
+                 # map_dir = "data/mapbox/",
+                 alpha = 0.9,
+                 margin_factor = 2,
+                 equidistant = FALSE, 
+                 ext = ext) %>%
+  # map_service = "osm", map_type = "hydda", alpha = 0.5) %>% 
+  add_labels(title = "Wilson's Plover, Bahía de Ceuta, Mexico", 
+             subtitle = "Female CV0195, nest D1",
+             x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
+  add_northarrow(colour = "white",label_size = 4, height = 0.1, size = 0.8,
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.05), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.25)) %>%
+  add_scalebar(colour = "white", distance = 2, 
+               x = ext[1] - ((ext[1] - ext[2]) * 0.1), 
+               y = ext[3] - ((ext[3] - ext[4]) * 0.1), 
+               height = 0.03) %>%
+  add_timestamps(type = "label", 
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.75), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.9), 
+                 size = 4) %>%
+  add_progress()
 
-sinaloa_cities <- 
-  data.frame(y = c(24.8091, 23.2494, 23.9019),
-             x = c(-107.3940, -106.4111, -106.9286)) %>% 
-  mutate(laby = y - 0.08,
-         labx = x - 0.1)
+Female_CN0937_move_frames <- 
+  frames_spatial(Female_CN0937_move_align, 
+                 path_alpha = 0.8, path_size = 3,
+                 trace_show = TRUE, tail_size = 0.75, 
+                 path_legend = FALSE, path_fade = TRUE,
+                 path_colours = brewer.pal(7, "Dark2")[c(2)],
+                 map_service = "mapbox", map_type = "satellite",
+                 map_token = "pk.eyJ1IjoibHVrZWViZXJoYXJ0IiwiYSI6ImNqeHA5bnUzaTBmZjUzbXF1ZHhwbjlzNXgifQ.zvOb_q-tUGOEtRKoyyki-Q",
+                 # map_dir = "data/mapbox/",
+                 alpha = 0.9,
+                 margin_factor = 2,
+                 equidistant = FALSE, 
+                 ext = ext) %>%
+  # map_service = "osm", map_type = "hydda", alpha = 0.5) %>% 
+  add_labels(title = "Snowy Plover, Bahía de Ceuta, Mexico", 
+             subtitle = "Female CN0937, nest C301",
+             x = "Longitude", y = "Latitude") %>% # add some customizations, such as axis labels
+  add_northarrow(colour = "white",label_size = 4, height = 0.1, size = 0.8,
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.05), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.25)) %>%
+  add_scalebar(colour = "white", distance = 2, 
+               x = ext[1] - ((ext[1] - ext[2]) * 0.1), 
+               y = ext[3] - ((ext[3] - ext[4]) * 0.1), 
+               height = 0.03) %>%
+  add_timestamps(type = "label", 
+                 x = ext[1] - ((ext[1] - ext[2]) * 0.75), 
+                 y = ext[3] - ((ext[3] - ext[4]) * 0.9), 
+                 size = 4) %>%
+  add_progress()
 
-All_tags_frames2 <- 
-  add_gg(All_tags_frames, 
-         gg = expr(
-           geom_point(aes(x = longitude, y = latitude), 
-                      data = recovery_location, 
-                      color = "white", fill = "#7570B3", 
-                      shape = 21, size = 3)
-         ), 
-         data = recovery_location)
+Male_CN0066_move_frames[[289]]
+Female_CV0195_move_frames[[288]]
+Female_CA3224_move_frames[[289]]
+Male_CA3340_move_frames[[288]]
+Female_CN0937_move_frames[[288]]
 
-All_tags_frames2[[80]]
-
-All_tags_frames2 <- add_text(All_tags_frames2, "Found dead on 06-01\nTag recovered from carcass  06-04", 
-                             y = recovery_location[1, "latitude"], 
-                             x = recovery_location[1, "longitude"] - 0.012,
-                             colour = "black", size = 2, type = "label")
-
-All_tags_frames2 <- add_text(All_tags_frames2, "Notes: no data collected between 05-22 1300 and 05-29 0500 presumably\ndue to carcas laying on tag. Few data collected at recovery location\nbetween 05-29 1300 and 06-04 0100 (carcass moved to allow GPS signal?)", 
-                             y = recovery_location[1, "latitude"], 
-                             x = -8.92,
-                             colour = "black", size = 2, type = "label")
-
-# All_tags_frames2 <- add_text(All_tags_frames2, "Ceuta",
-#                              y = sinaloa_cities[3, "laby"], 
-#                              x = sinaloa_cities[3, "labx"],
-#                              colour = "black", size = 3, type = "label")
-All_tags_frames2[[1140]]
+# recovery_location <- 
+#   as.data.frame(NFTag55584)[c(23),]
+# 
+# sinaloa_cities <- 
+#   data.frame(y = c(24.8091, 23.2494, 23.9019),
+#              x = c(-107.3940, -106.4111, -106.9286)) %>% 
+#   mutate(laby = y - 0.08,
+#          labx = x - 0.1)
+# 
+# All_tags_frames2 <- 
+#   add_gg(All_tags_frames, 
+#          gg = expr(
+#            geom_point(aes(x = longitude, y = latitude), 
+#                       data = recovery_location, 
+#                       color = "white", fill = "#7570B3", 
+#                       shape = 21, size = 3)
+#          ), 
+#          data = recovery_location)
+# 
+# All_tags_frames2[[80]]
+# 
+# All_tags_frames2 <- add_text(All_tags_frames2, "Found dead on 06-01\nTag recovered from carcass  06-04", 
+#                              y = recovery_location[1, "latitude"], 
+#                              x = recovery_location[1, "longitude"] - 0.012,
+#                              colour = "black", size = 2, type = "label")
+# 
+# All_tags_frames2 <- add_text(All_tags_frames2, "Notes: no data collected between 05-22 1300 and 05-29 0500 presumably\ndue to carcas laying on tag. Few data collected at recovery location\nbetween 05-29 1300 and 06-04 0100 (carcass moved to allow GPS signal?)", 
+#                              y = recovery_location[1, "latitude"], 
+#                              x = -8.92,
+#                              colour = "black", size = 2, type = "label")
+# 
+# # All_tags_frames2 <- add_text(All_tags_frames2, "Ceuta",
+# #                              y = sinaloa_cities[3, "laby"], 
+# #                              x = sinaloa_cities[3, "labx"],
+# #                              colour = "black", size = 3, type = "label")
+# All_tags_frames2[[1140]]
 
 # this line opens an R Session in all of your cores (which makes it faster to create the single pictures)
 cl = detectCores() %>% makePSOCKcluster; registerDoParallel(cl)
 
 # animate frames
-# animate_frames(frames[1:25], width = 350, height = 350, res = 50,
-#                overwrite = TRUE, out_file = "R/animations/PinPoint_moveVis_Oct_21_test.gif")
 animate_frames(Male_CA3340_move_frames, width = 800, height = 800, 
                overwrite = TRUE, out_file = "products/animations/Male_CA3340_2022_short_animation.mp4")
-animate_frames(All_tags_frames, width = 800, height = 800, 
-               overwrite = TRUE, out_file = "products/animations/F_CA3224_and_M_CA3340_2022_short.mp4")
+animate_frames(Male_CN0066_move_frames, width = 800, height = 800, 
+               overwrite = TRUE, out_file = "products/animations/Male_CN0066_2022_short_animation.mp4")
+animate_frames(Female_CV0195_move_frames, width = 800, height = 800, 
+               overwrite = TRUE, out_file = "products/animations/Female_CV0195_2022_short_animation.mp4")
+animate_frames(Female_CA3224_move_frames, width = 800, height = 800, 
+               overwrite = TRUE, out_file = "products/animations/Female_CA3224_2022_short_animation.mp4")
+animate_frames(Female_CN0937_move_frames, width = 800, height = 800, 
+               overwrite = TRUE, out_file = "products/animations/Female_CN0937_2022_short_animation.mp4")
 # closes the R Sessions in the other cores (not the one that you are working on)
 stopCluster(cl)
 registerDoSEQ()

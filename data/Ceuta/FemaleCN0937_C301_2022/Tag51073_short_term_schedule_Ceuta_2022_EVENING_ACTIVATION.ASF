@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<schedule>
+    <rule>
+        <type>Discrete</type>
+        <firstday>2022-05-03</firstday>
+        <lastday>2022-05-03</lastday>
+        <dailyevents>01:00;</dailyevents>
+    </rule>
+    <rule>
+        <type>Rollover</type>
+        <firstdatetime>2022-05-05 12:00</firstdatetime>
+        <lastdatetime>2022-05-06 12:00</lastdatetime>
+        <frequency>0 days 00:20</frequency>
+    </rule>
+    <rule>
+        <type>Rollover</type>
+        <firstdatetime>2022-05-06 16:00</firstdatetime>
+        <lastdatetime>2022-07-30 16:00</lastdatetime>
+        <frequency>4 days 00:00</frequency>
+    </rule>
+    <rule>
+        <type>Rollover</type>
+        <firstdatetime>2022-05-06 04:00</firstdatetime>
+        <lastdatetime>2022-07-31 04:00</lastdatetime>
+        <frequency>4 days 00:00</frequency>
+    </rule>
+    <rule>
+        <type>Rollover</type>
+        <firstdatetime>2022-08-07 16:00</firstdatetime>
+        <lastdatetime>2023-04-09 16:00</lastdatetime>
+        <frequency>8 days 00:00</frequency>
+    </rule>
+</schedule>
