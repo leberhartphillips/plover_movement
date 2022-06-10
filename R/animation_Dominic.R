@@ -180,17 +180,17 @@ ringo_Justus <-
                             time_zone = "GMT", tag_model = "PinPoint-10",
                             bird_ID = "Justus", bird_code = NA, bird_sex = "M")
 
-ringo_NWR_GWM <- 
+ringo_Vera <- 
   import_plover_tag_spatial(data_loc = "data/Husum/PinPoint 50615 2022-05-10 11-42-33 for Luke female Ringed plover NWR-GWM.txt",
                             tag_ID = "PinPoint_50615", projection = CRS("+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"),
                             time_zone = "GMT", tag_model = "PinPoint-10",
-                            bird_ID = "NWR_GWM", bird_code = NA, bird_sex = "F")
+                            bird_ID = "Vera", bird_code = NA, bird_sex = "F")
 
 # bind all long-term tags together
 LT_tags <- bind(ringo_Clara,
-                 ringo_Bob,
-                 ringo_Justus,
-                 ringo_NWR_GWM)
+                ringo_Bob,
+                ringo_Justus,
+                ringo_Vera)
 # check the data (number of rows, head, and tail)
 nrow(as.data.frame(LT_tags))
 head(as.data.frame(LT_tags))
@@ -222,8 +222,15 @@ mapview(LT_tags, zcol = "sex",
 mapview(ST_tags, zcol = "sex", 
         col.regions = brewer.pal(8, "Dark2")[c(2, 1)])#colorRampPalette(brewer.pal(8, "Dark2")))
 
+# wangle longterm tagging data to subset to autumn migration period
+LT_tags_wrangle <- 
+  LT_tags %>%
+  as.data.frame(.) %>% 
+  arrange(timestamp_simple) %>% 
+  filter(timestamp_simple > as.Date("2021-07-16") & timestamp_simple < as.Date("2021-10-19"))
+
 # make move object for animation
-LT_tags_move <- df2move(df = arrange(as.data.frame(LT_tags), timestamp_simple), track_id = "ring", 
+LT_tags_move <- df2move(df = LT_tags_wrangle, track_id = "ring", 
                         proj = "+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0",
                         x = "longitude", y = "latitude", time = "timestamp")
 
@@ -273,7 +280,7 @@ LT_tags_move_frames <-
   add_progress()
 
 # check the last frame to see if the annotations are nicely positioned
-LT_tags_move_frames[[670]]
+LT_tags_move_frames[[171]]
 
 # do the same for the short-term tag data
 ST_tags_move_frames <- 
